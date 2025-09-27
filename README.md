@@ -1,5 +1,4 @@
-# mSGDT
-Implementation and testing of mSGDT
+# Implementation and testing of mSGDT
 
 This repository contains MATLAB code for implementing and testing mSGDT, a stochastic gradient descent based method for solving tensor linear systems under the t-product with missing data. It implements the method for three different missing data models, the uniform missing data model, the column block missing data model, and the frontal slice missing data model.
 
