@@ -7,7 +7,7 @@ errors = zeros(N, 1);
 swap = false;
 
 count = 1;
-f = sqrt(swapAt) / 10^6;
+f = 1 / 10^6;
 
 fdiag = zeros(l, l, n);
 while (count <= N)
@@ -28,7 +28,7 @@ while (count <= N)
         swap = true;
     end
     if swap
-        f = sqrt(swapAt * count) / 10^6;
+        f = sqrt(swapAt) / (10^6 * sqrt(count));
     end
     
     sol = sol - f * g;
