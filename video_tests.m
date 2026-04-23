@@ -20,12 +20,26 @@ end
 imwrite(grayFrame, 'draws/last_frame.png')
 X = double(videoTensor);
 
-% Run mSGDT on X for N = 10^6 iterations and p = 0.3
-disp("Running mSGDT on shuttle video for p = 0.3")
-[~, ~, v3] = mSGDT_uniform_streaming(X, 10^6, 5000, 0.3);
+METHOD = "frontal";
+p = 0.7;
+N = 10^5; 
+swapAt = 5000; 
+
+str = METHOD + "_p" + sprintf("%d", 10*p);
+
+% Run mSGDT on X for specified N and p = 0.3
+disp("Running mSGDT on shuttle video for p = " + p + " with method " + METHOD);
+
+if strcmpi(METHOD, "uniform")
+    [~, ~, v3] = mSGDT_uniform_streaming(X, N, swapAt, p);
+elseif strcmpi(METHOD, "column")
+    [~, ~, v3] = mSGDT_column_streaming(X, N, swapAt, p, 8);
+elseif strcmpi(METHOD, "frontal")
+    [~, ~, v3] = mSGDT_frontal_streaming(X, N, swapAt, p);
+end
 
 % Save solution as a video, and store first and last frames
-writerObj = VideoWriter('draws/p3.avi');
+writerObj = VideoWriter('draws/' + str + '.avi');
 writerObj.FrameRate = 30; 
 open(writerObj);
 for k = 1:size(v3, 3)
@@ -33,32 +47,9 @@ for k = 1:size(v3, 3)
     frameRGB = repmat(frame, [1 1 3]); % Convert to RGB (required by VideoWriter)
 
     if k == 1
-        imwrite(frameRGB, 'draws/p3_first_frame.png');
+        imwrite(frameRGB, 'draws/' + str + '_first_frame.png');
     elseif k == size(v3, 3)
-        imwrite(frameRGB, 'draws/p3_last_frame.png');
-    end
-
-    writeVideo(writerObj, frameRGB);   % Write frame
-end
-close(writerObj)
-
-
-% Run mSGDT on X for N = 10^6 iterations and p = 0.7
-disp("Running mSGDT on shuttle video for p = 0.7")
-[~, ~, v7] = mSGDT_uniform_streaming(X, 10^6, 5000, 0.7);
-
-% Save solution as a video, and store first and last frames
-writerObj = VideoWriter('draws/p7.avi');
-writerObj.FrameRate = 30; 
-open(writerObj);
-for k = 1:size(v7, 3)
-    frame = uint8(v7(:, :, k));  % Extract grayscale frame
-    frameRGB = repmat(frame, [1 1 3]); % Convert to RGB (required by VideoWriter)
-
-    if k == 1
-        imwrite(frameRGB, 'draws/p7_first_frame.png');
-    elseif k == size(v7, 3)
-        imwrite(frameRGB, 'draws/p7_last_frame.png');
+        imwrite(frameRGB, 'draws/' + str + '_last_frame.png');
     end
 
     writeVideo(writerObj, frameRGB);   % Write frame
